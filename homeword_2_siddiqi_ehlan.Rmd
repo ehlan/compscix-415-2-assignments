@@ -1,0 +1,161 @@
+---
+title: "COMPSCIX 415.2 Homework 2"
+author: "Ehlan Siddiqi"
+date: "6/19/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r load_packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggplot2)
+```
+
+## **Excercise 3.2.4 **
+
+## 1. Run ggplot(data = mpg). What do you see?
+```{r 3.2.4-q1}
+ggplot(data = mpg)
+```
+
+## Answer: I see a grey plot with no dots or data on it.
+
+## 2. How many rows are in mpg? How many columns?
+```{r 3.2.4-Q2}
+dim(mpg)
+```
+## Answer: 234 Rows, 11 columns
+
+## 3. What does the drv variable describe? Read the help for ?mpg to find out.
+```{r 3.2.4-Q3}
+?mpg
+```
+## Answer: f = front-wheel drive, r = rear wheel drive, 4 = 4wd
+
+## 4. Make a scatterplot of hwy vs cyl
+```{r 3.2.4-Q4}
+ggplot(data = mpg) + geom_point (mapping = aes(x = hwy, y = cyl))
+```
+## 5. What happens if you make a scatterplot of class vs drv? Why is the plot not useful?
+```{r 3.2.4-Q5}
+ggplot(data = mpg) + geom_point (mapping = aes(x = class, y = drv))
+```
+## Answer: This graph is not usefull because class and drv attributes are categorical
+
+## ** Excercise 3.3.1 **
+
+## 1. What’s gone wrong with this code? Why are the points not blue?
+## Answer: Color cannot be part of Aesthetic, correct code:
+```{r 3.3.1-Q1}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+```
+## 2. Which variables in mpg are categorical? Which variables are continuous? (Hint: type ?mpg to read the documentation for the dataset). How can you see this information when you run mpg?
+```{r r 3.3.1-Q2}
+head(mpg)
+```
+## Answer: the head command will dispay the the continues vs categorical under each column
+## categorical: manufacturer, model, trans, drv, fl, class
+
+## 3.Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?
+```{r 3.3.1-Q3}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = class, color = trans, size = hwy, shape = drv))
+```
+## Answser, different scale is shown.
+
+## 4. What happens if you map the same variable to multiple aesthetics?
+```{r 3.3.1-Q4}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = cty, size = cty))
+```
+## Answer: chart still displays both.
+
+## 5. What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom_point)
+`
+```{r 3.3.1-Q5}
+?geom_point
+```
+## Answer: stroke asthetics can modify the width of the border or any object.
+
+## 6. What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ < 5)?
+```{r 3.3.1-Q6}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = class, color = displ < 5))
+```
+## Answer: plot still loads the aestehtic.
+
+## ** Excercise 3.5.1 **
+
+## 4. What are the advantages to using faceting instead of the colour aesthetic? What are the disadvantages? How might the balance change if you had a larger dataset?
+
+```{r 3.5.1-Q4}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2)
+```
+
+## Answer: Facet wraps groups up individiual dataset separately. With coloring,they are grouped togehter to have a side by side comparison. For larger data coloring would be a better option to group all data together for comparison, as there maybe too manuy boxes to compare and will become difficult.
+
+## 5. Read ?facet_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet_grid() have nrow and ncol argument?
+
+```{r 3.5.1-Q5}
+?facet_wrap
+```
+## Answer: nrow, ncol are number for rows and column.  Layout of columns can also be controled by scales and shrink.
+## grid of fixed, therefor number of row and column cannot be modified.
+
+## ** Excercise 3.6.1 **
+
+## 1 What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?
+## Answer: will use a geom_line 
+
+## 2. Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.
+```{r 3.6.1-Q2}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE)
+```
+
+### 3. What does show.legend = FALSE do? What happens if you remove it?
+```{r 3.6.1-Q3}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_point() + 
+  geom_smooth(show.legend = TRUE)
+```
+## Answer: no changes for FALSE as legend is not included by default
+
+## 4. What does the se argument in geom_smooth() do?
+## Answer: se - display confidence interval around smooth? (TRUE by default)
+
+## 5 Will these two graphs look different? Why/why not?
+```{r 3.6.1-Q5}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+
+ggplot() + 
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
+```
+## Answer: they do not look different. ggplot being parent object, the child ojbect will inherit from parent.
+
+## ** Excercise 3.7.1 **
+
+## 1. What is the default geom associated with stat_summary()? How could you rewrite the previous plot to use that geom function instead of the stat function?
+
+## Answer the default geom associated with stat_summary is pointrange.
+```{r 3.7.1-Q1}
+ggplot(data = diamonds) + 
+  geom_pointrange(
+    mapping = aes(x = cut, y = depth), 
+    fun.ymin = min, 
+    fun.ymax = max, 
+    fun.y = median, 
+    stat = "summary")
+```
+
+
+
