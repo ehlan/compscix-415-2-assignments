@@ -152,3 +152,9 @@ ggplot() +
 ### geom_bar makes the height of the bar proportional to the number of cases in each group (or if the weight aethetic is supplied, the sum of the weights). geom_bar usese the stat_count by default, it counts the number of cases at each x position. geom_col uses stat_identity and leaves data as is.
 
 
+## infographics
+
+## there were too many data to use for them to have a grouped wrapped grapsh. They should have used a grouped side by side liniear chart for comparison.
+## could have used a bit more color combination. There were more number than visual representation of space used.
+## what worked is the separation of different parts. 
+
