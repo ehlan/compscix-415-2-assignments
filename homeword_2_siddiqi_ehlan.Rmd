@@ -144,18 +144,11 @@ ggplot() +
 
 ## ** Excercise 3.7.1 **
 
-## 1. What is the default geom associated with stat_summary()? How could you rewrite the previous plot to use that geom function instead of the stat function?
+## 2. What does geom_col() do? How is it different to geom_bar()?
 
-## Answer the default geom associated with stat_summary is pointrange.
-```{r 3.7.1-Q1}
-ggplot(data = diamonds) + 
-  geom_pointrange(
-    mapping = aes(x = cut, y = depth), 
-    fun.ymin = min, 
-    fun.ymax = max, 
-    fun.y = median, 
-    stat = "summary")
-```
 
+
+## Answer : 
+### geom_bar makes the height of the bar proportional to the number of cases in each group (or if the weight aethetic is supplied, the sum of the weights). geom_bar usese the stat_count by default, it counts the number of cases at each x position. geom_col uses stat_identity and leaves data as is.
 
 
