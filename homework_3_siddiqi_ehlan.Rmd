@@ -174,6 +174,10 @@ FALSE & NA
 
 ## Can you figure out the general rule? (NA*0 is a tricky conterexample!)
 ## Answer:
+## Any defaulted NA value is considered an infinity, therefore any expression against infinity will result in infinity. For boolean expresssion NA will result in FALSE, therefore and condition that is compared with NA will be treated as it was being compared with FALSE
+```{r}
+NA * 0
+```
 
 ## ** Exercise 5.4.1 **
 ## 1 Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, and arr_delay from flights
