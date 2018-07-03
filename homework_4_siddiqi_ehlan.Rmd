@@ -1,0 +1,177 @@
+---
+title: "COMPSCIX 415.2 Homework 4"
+author: "Ehlan Siddiqi"
+date: "7/03/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+```{r load_packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(nycflights13)
+```
+
+## **Exercise 5.6.7**
+
+# 2. Come up with another approach that will give you the same output as 
+# not_cancelled %>% count (dest) and not_cancelled %>% count(tailnum, wt
+# disantce) (without using count)
+
+#Answer:
+```{r 5.6.7-Q2}
+not_cancelled <-
+  flights %>%
+  filter(!is.na(dep_delay), !is.na(arr_delay))
+# count(dest)
+not_cancelled %>%
+  group_by(dest) %>%
+  summarise(n = n())
+
+# count(tailnum, wt = distance)
+not_cancelled %>%
+  group_by(tailnum) %>%
+  summarize(n= sum(distance))
+```
+
+# 4. Look at the number of cancelled flights per day. is there a pattern? Is the proportion of calcelled flights related to average delay?
+
+# Answer
+```{r 5.6.7.Q4}
+flights %>% 
+  group_by(day) %>%
+  summarise(cancelled_flights = mean(is.na(dep_delay)),
+            dep_delay_mn = mean(dep_delay, na.rm = T),
+            arr_delay_mn = mean(arr_delay, na.rm = T)) %>%
+  ggplot(aes(y = cancelled_flights)) +
+  geom_point(aes(x = dep_delay_mn)) +
+  geom_point(aes(x = arr_delay_mn)) +
+  labs(x = "Delay Average", y = "Cancelled Flights")
+```
+# delays are proportionate to cancellation
+
+# 6. What does the sort argument to count() do. WHen might you use it?
+# Answer:
+# sort will sort results of the count.
+```{r 5.6.7.Q6}
+flights %>%
+  count(flight, sort = T)
+```
+
+## **Exercise 10.5**
+
+# 1. How can you tell if an object is a tibble?
+# Answer:
+# If you are able to explicitly print, it's a tibble.
+```{r 10.5-1}
+print(mtcars)
+```
+
+# 2. Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the default data frame behaviours cause you frustration?
+# Answer
+```{r 10.5-2}
+#df <- data.frame(abc = 1, xyz = "a")
+
+# df$x
+# tibble will throw a warning, as partial matching is not allowed
+
+#df[, "xyz"]
+# no difference
+
+#df[, c("abc", "xyc")]
+# no difference
+```
+# Data frame may throw in consistent data will tibble will not.
+
+# 3. If you have the name of a variable stored in an ojbect, e.g var <- "mpg", how can you extract the reference variable form a tibble?
+
+```{r 10.5-3}
+var <- "mpg"
+as_tibble(mtcars)[var]
+```
+
+# 6. What option controls how many additional column names are printed at at the footer of a tibble?
+# Answer
+```{r 10.5-6}
+m <- 10
+n <- 20
+options(tibble.print_max = n, tibble.print_min = m)
+# if more than n rows, print m rows.
+```
+
+## **Exercise 12.3.3 **
+
+# 2. Why does this code fail
+# Answer
+# cannot have number as a column name
+```{r 12.3.3-Q2}
+table4a %>%
+  gather('1999', '2000', key = "year", value = "cases")
+```
+
+# 3. Why does spreading this tibble fail? How could you ada a new column to fix the problem?
+
+# Answer: name and key are unique, cannot have two age option for same name.
+```{r 12.3.3-Q3}
+people <- tribble(
+   ~name,              ~key,       ~value, 
+  #------------------/-----------/-------
+  "Phillips Woods",   "age",      45,
+  "Phillips Woods",   "height",   186,
+  "Phillips Woods",   "age",      50,
+  "Jessica Cordero",  "age",      37,
+  "Jessica Cordero",  "height",   156
+)
+people %>%
+  mutate(unique = c(1, 2, 2, 3, 3)) %>%
+  select(unique, everything()) %>%
+  spread(key, value)
+```
+
+# 4.Tidy the simple tibble below. Do ou need to spread or gather it? What are the variables?
+```{r 12.3.3-Q4}
+preg <- tribble (
+  ~pregnant, ~male, ~female,
+  "yes",      NA,    10,
+  "no",       20,   12
+)
+preg %>%
+  gather(gender, values, -pregnant)
+```
+
+## **Exercise 12.4.3
+# 1. What do the extra and fill argument do in separate()? Experiment with the various options for the following two toy datasets.
+```{r 12.4.3-Q1}
+tibble(x = c("a,b,c", "d,e,f", "h,i,j")) %>%
+  separate(x, c("one", "two", "three"))
+
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
+  separate(x, c("one", "two", "three"))
+
+## fill adds option to deal with missing columns
+tibble(x = c("a,b,c", "d,e,f", "h,i,j")) %>%
+  separate(x, c("one", "two", "three", "four", fill = "warn"))
+tibble(x = c("a,b,c", "d,e,f", "h,i,j")) %>%
+  separate(x, c("one", "two", "three", "four", fill = "right"))
+tibble(x = c("a,b,c", "d,e,f", "h,i,j")) %>%
+  separate(x, c("one", "two", "three", "four", fill = "left"))
+
+## extra drops or merges the extra columnt
+tibble(x = c("a,b,c", "d,e,f", "h,i,j")) %>%
+  separate(x, c("one", "two", "three", "four", extra = "warn"))
+tibble(x = c("a,b,c", "d,e,f", "h,i,j")) %>%
+  separate(x, c("one", "two", "three", "four", extra = "drop"))
+tibble(x = c("a,b,c", "d,e,f", "h,i,j")) %>%
+  separate(x, c("one", "two", "three", "four", extra = "merge"))
+
+```
+
+# 2. Both unite() and separate() have a remove argument. What does it do? Why would you set it to FALSE?
+```{r 12.4.3-Q2}
+## unite and separate creates new column and keeps the existing ones. remove actually removes the original column that was used for unite or separate
+```
+
