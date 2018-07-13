@@ -1,0 +1,164 @@
+---
+title: "ehlan_siddiqi_midterm"
+author: "Ehlan Siddiqi"
+date: "7/11/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r load_packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggplot2)
+```
+
+## Midterm Examination - Ehlan Siddiqi
+### Table of Content
+1. RStudio and R Markdown
+2. The tidyverse packages
+3. R Basics
+4. Data import/export
+5. Visualization
+6. Data munging and wrangling
+7. EDA
+8. GIT and Github
+
+
+## 1. RStudio and R Markdown
+ - Provided
+ 
+## 2. The tidyverse packages
+
+**1. Can you name which package is associated with each task below?**
+
+Plotting - tidyverse/ggplot2
+Data munging/wrangling - tidyr/
+Reshaping (speading and gathering) data -
+Importing/exporting data -
+
+**2. Now can you name two functions that you've used form each package that you listed above for these tasks?**
+
+Plotting - tidyverse/ggplot2
+Data munging/wrangling - tidyr/
+Reshaping (speading and gathering) data -
+Importing/exporting data -
+
+## 3. R Basics
+
+**1. Fix this code with fewest number of changes possible to it works:**
+```{r}
+My_data.name___is.too00ooLong <- c( 1 , 2   , 3 )
+```
+
+**2. Fix this code so it works:**
+```{r}
+my_string <- c('has', 'an', 'error', 'in', 'it')
+```
+**3. Look at the code below and comment on what happened to the values in the vector:**
+my_vector <- c(1, 2, '3', '4', 5)
+my_vector
+
+Answer: They all got converted to String because of c() method.
+
+## 4. Data import/export
+
+**1. Download the rail_trail.txt file from Canvas (in the Midterm Exam section) and successfully import it into R. Prove that it was imported successfully by including your import code and taking a glimpse of the result.**
+
+```{r}
+file_path <- '/Users/ehlansiddiqi/Downloads/rail_trail.txt'
+rail_trail_data <- read_delim(file_path, delim = '|')
+glimpse(rail_trail_data)
+```
+
+**2. Export the file into a comma-separated file and name it “rail_trail.csv”. Make sure you define the path correctly so that you know where it gets saved. Then reload the file. Include your export and import code and take another glimpse.**
+
+```{r}
+write_csv(rail_trail_data, '/Users/ehlansiddiqi/Downloads/rail_trail.csv')
+rail_trail_csv <- read_csv('/Users/ehlansiddiqi/Downloads/rail_trail.csv')
+glimpse(rail_trail_csv)
+```
+
+## 5. Visualization
+
+**1. Critique this graphic: give only three examples of what is wrong with this graphic. Be concise.**
+
+**2. Reproduce this graphic using the diamonds data set.**
+```{r}
+ggplot(data = diamonds) +
+  geom_boxplot(aes(x = cut, y= carat, fill = color), position = 'identity')+
+  xlab('CUT OF DIAMOND')+
+  ylab('CARAT OF DIAMOND')+
+  coord_flip()
+```
+
+**3. The previous graphic is not very useful. We can make it much more useful by changing one thing about it. Make the change and plot it again.**
+
+```{r}
+ggplot(data = diamonds) +
+  geom_boxplot(aes(x = cut, y= carat, fill = color), position = "dodge")+
+  xlab('CUT OF DIAMOND')+
+  ylab('CARAT OF DIAMOND')+ 
+  coord_flip()
+```
+
+## 5. Data munging and wrangling
+
+**1. Is this data “tidy”? If yes, leave it alone and go to the next problem. If no, make it tidy. Note: this data set is called table2 and is available in the tidyverse package. It should be ready for you to use after you’ve loaded the tidyverse package.**
+
+This data is not tidy because the 'type' and 'count' column contains only key of the count value.
+This can be made tidy using the spread() method
+```{r}
+spread(table2, type, count)
+```
+
+**2. Create a new column in the diamonds data set called price_per_carat that shows the price of each diamond per carat (hint: divide). Only show me the code, not the output.**
+```{r}
+diamonds$price_per_carat <- (diamonds$price / diamonds$carat)
+```
+
+**3. For each cut of diamond in the diamonds data set, how many diamonds, and what proportion, have a price > 10000 and a carat < 1.5? There are several ways to get to an answer, but your solution must use the data wrangling verbs from the tidyverse in order to get credit.**
+```{r}
+result <- diamonds %>% 
+  filter(price > 10000, carat < 1.5)
+```
+
+  **Do the results make sense? Why?**
+    
+    Yes. The prices seems inconsistent with the qulity of the dimaonds. A lesser carat and cut seems to have higher price.
+    
+  **Do we need to be wary of any of these numbers? Why?**
+    
+    Higher carat and cut should lead to higer price. So these numbers may not be accurate.
+    
+## 5. EDA
+
+**Take a look at the txhousing data set that is included with the ggplot2 package and answer these questions:**
+
+**1. During what time period is this data from?**
+```{r}
+min(txhousing$year)
+min(txhousing$year)
+```
+This is from the year 2000 to 2015
+
+**2. How many cities are represented?**
+```{r}
+sum(!duplicated(txhousing$city))
+```
+46
+
+**3. Which city, month and year had the highest number of sales?**
+```{r}
+answer <- txhousing %>% filter(sales == max(txhousing$sales, na.rm=T)) 
+glimpse(answer$city)
+```
+
+**4. What kind of relationship do you think exists between the number of listings and the number of sales? Check your assumption and show your work.**
+
+```{r}
+
+```
+
+**5. **
+**6. **
