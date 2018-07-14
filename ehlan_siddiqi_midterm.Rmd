@@ -13,38 +13,46 @@ library(tidyverse)
 library(ggplot2)
 ```
 
+[GitHub - Click here!](https://github.com/ehlan/compscix-415-2-assignments)
+
 ## Midterm Examination - Ehlan Siddiqi
-### Table of Content
-1. RStudio and R Markdown
-2. The tidyverse packages
-3. R Basics
-4. Data import/export
-5. Visualization
-6. Data munging and wrangling
-7. EDA
-8. GIT and Github
+### Table of Content (click to jump to each section)
+<a href="#sec1">1. RStudio and R Markdown</a><br>
+<a href="#sec2">2. The tidyverse packages</a><br>
+<a href="#sec3">3. R Basics</a><br>
+<a href="#sec4">4. Data import/export</a><br>
+<a href="#sec5">5. Visualization</a><br>
+<a href="#sec6">6. Data munging and wrangling</a><br>
+<a href="#sec7">7. EDA</a><br>
+<a href="#sec8">8. GIT and Github</a><br>
 
 
-## 1. RStudio and R Markdown
+##<a name="sec1">1.</a> RStudio and R Markdown
  - Provided
  
-## 2. The tidyverse packages
+##<a name="sec2">2.</a> The tidyverse packages
 
 **1. Can you name which package is associated with each task below?**
 
-Plotting - tidyverse/ggplot2
-Data munging/wrangling - tidyr/
-Reshaping (speading and gathering) data -
-Importing/exporting data -
+&nbsp;&nbsp;&nbsp;**Plotting -** ggplot2
+
+&nbsp;&nbsp;&nbsp;**Data munging/wrangling -** dplyr
+
+&nbsp;&nbsp;&nbsp;**Reshaping (speading and gathering) data -** tidyr, tibble 
+
+&nbsp;&nbsp;&nbsp;**Importing/exporting data -** readr
 
 **2. Now can you name two functions that you've used form each package that you listed above for these tasks?**
 
-Plotting - tidyverse/ggplot2
-Data munging/wrangling - tidyr/
-Reshaping (speading and gathering) data -
-Importing/exporting data -
+&nbsp;&nbsp;&nbsp;**Plotting -**geom_boxplot(), geom_point().
 
-## 3. R Basics
+&nbsp;&nbsp;&nbsp;**Data munging/wrangling** -  mutate(), select().
+   
+&nbsp;&nbsp;&nbsp;**Reshaping (speading and gathering) data -** spread(), gather().
+
+&nbsp;&nbsp;&nbsp;**Importing/exporting data -** read_delim(), read_csv().
+
+##<a name="sec3">3.</a> R Basics
 
 **1. Fix this code with fewest number of changes possible to it works:**
 ```{r}
@@ -61,7 +69,7 @@ my_vector
 
 Answer: They all got converted to String because of c() method.
 
-## 4. Data import/export
+##<a name="sec4">4.</a> Data import/export
 
 **1. Download the rail_trail.txt file from Canvas (in the Midterm Exam section) and successfully import it into R. Prove that it was imported successfully by including your import code and taking a glimpse of the result.**
 
@@ -79,9 +87,13 @@ rail_trail_csv <- read_csv('/Users/ehlansiddiqi/Downloads/rail_trail.csv')
 glimpse(rail_trail_csv)
 ```
 
-## 5. Visualization
+##<a name="sec5">5.</a> Visualization
 
 **1. Critique this graphic: give only three examples of what is wrong with this graphic. Be concise.**
+
+* I would use MADAM PRESIDENT and bold both words.
+* This is not tidy. Age range and gender are used in the same line. Although used different color, but it does not give a clear visual. The circular shapes are also not to proportion and they are overwhelming be bigger than the graph header (yes/no).
+* Major flaw in this chart is that it does not specify how many Men and Women within the age range given has provided the answer. A simplified histogram with y axis being age range and Men Women in parrellel bar would make it more effective.
 
 **2. Reproduce this graphic using the diamonds data set.**
 ```{r}
@@ -94,15 +106,16 @@ ggplot(data = diamonds) +
 
 **3. The previous graphic is not very useful. We can make it much more useful by changing one thing about it. Make the change and plot it again.**
 
+The graph was not showing carats for each color. It had an overlap. Replacing the identity will fix it.
 ```{r}
 ggplot(data = diamonds) +
-  geom_boxplot(aes(x = cut, y= carat, fill = color), position = "dodge")+
+  geom_boxplot(aes(x = cut, y= carat, fill = color), position = 'dodge')+
   xlab('CUT OF DIAMOND')+
   ylab('CARAT OF DIAMOND')+ 
   coord_flip()
 ```
 
-## 5. Data munging and wrangling
+##<a name="sec6">6.</a> Data munging and wrangling
 
 **1. Is this data “tidy”? If yes, leave it alone and go to the next problem. If no, make it tidy. Note: this data set is called table2 and is available in the tidyverse package. It should be ready for you to use after you’ve loaded the tidyverse package.**
 
@@ -121,24 +134,25 @@ diamonds$price_per_carat <- (diamonds$price / diamonds$carat)
 ```{r}
 result <- diamonds %>% 
   filter(price > 10000, carat < 1.5)
+result
 ```
 
   **Do the results make sense? Why?**
     
-    Yes. The prices seems inconsistent with the qulity of the dimaonds. A lesser carat and cut seems to have higher price.
+    No.The prices seems inconsistent with the qulity of the dimaonds. A lesser carat and cut seems to have higher price.
     
   **Do we need to be wary of any of these numbers? Why?**
     
     Higher carat and cut should lead to higer price. So these numbers may not be accurate.
     
-## 5. EDA
+##<a name="sec7">7.</a> EDA
 
 **Take a look at the txhousing data set that is included with the ggplot2 package and answer these questions:**
 
 **1. During what time period is this data from?**
 ```{r}
-min(txhousing$year)
-min(txhousing$year)
+min(txhousing$year, na.rm=T)
+max(txhousing$year, na.rm=T)
 ```
 This is from the year 2000 to 2015
 
@@ -156,9 +170,37 @@ glimpse(answer$city)
 
 **4. What kind of relationship do you think exists between the number of listings and the number of sales? Check your assumption and show your work.**
 
+The relationship is 1 to 1.
 ```{r}
+ggplot(data = txhousing, mapping = aes(x = listings, y = sales))+
+  geom_boxplot()
+```
+
+**5. What proportion of sales is missing for each city?**
+
+
+```{r}
+sum(is.na(txhousing$sales))
+sum(!is.na(txhousing$sales))
+aggregate(txhousing$sales, by= list(city = txhousing$city), FUN=sum, na.rm = TRUE)
+aggregate(txhousing$sales, by= list(city = txhousing$city), FUN=sum, na.rm = FALSE)
 
 ```
 
-**5. **
-**6. **
+**6. Looking at only the cities and months with greater than 500 sales:**
+
+  Are the distributions of the median sales price (column name median), when grouped by city, different? The same? Show your work.
+
+They are not the same
+```{r}
+over500 <- txhousing %>% filter(sales > 500)
+over500 %>% group_by(city) %>% summarize(mean = mean(sales))
+over500 %>% group_by(median) %>% summarize(mean = mean(sales))
+```
+
+Any cities that stand out that you’d want to investigate further?
+
+Cities with higher mean.
+
+##<a name="sec8">8.</a> Git and Github
+link provided above
